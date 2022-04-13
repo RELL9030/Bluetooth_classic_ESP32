@@ -9,19 +9,16 @@
 
 /*
  *****************************************************
- *
  *    LIBRERIAS
- *
  *****************************************************
 */
 #include <LiquidCrystal.h>  
 #include "BluetoothSerial.h"
 #include "Funciones.h"
+
 /*
  *****************************************************
- *
  *    VARIABLES DEFINIDAS.
- *
  *****************************************************
 */
 #define RS 5 //PIN D19 o D5
@@ -39,25 +36,19 @@
 LiquidCrystal lcd(RS, EN, DB4, DB5, DB6, DB7); //INICIALIZACION LCD 16x2
 BluetoothSerial SerialBT; // Bluetooth Serial object
 
-const int buttonPin = 27;     // the number of the pushbutton pin 27;
+const int buttonPin = 27;     // el pin del botón 
 
 // variables will change:
-int lastState = LOW;  // the previous state from the input pin
-int currentState;   // the current reading from the input pin
+int lastState = LOW;  // el estado anterior del pin de entrada
+int currentState;   // la lectura actual del pin de entrada
 
 // Handle received and sent messages
 String message = "";
 char incomingChar;
 
-// Timer: auxiliar variables
-unsigned long previousMillis = 0;    // Stores last time temperature was published
-const long interval = 10000;         // interval at which to publish sensor readings
-
 /*
  *****************************************************
- *
  *    SETUP
- *
  *****************************************************
 */
 void setup()
@@ -82,7 +73,7 @@ void setup()
     delay(500);
   }
   SerialBT.begin("ESP32");  // Bluetooth device name
-  Serial.println("The device started, now you can pair it with bluetooth!");
+  Serial.println("El dispositivo comenzó, ahora puedes emparejarlo con bluetooth!");
   lcd.clear();
   lcd.setCursor(2, 0);
   lcd.print("BT INICIADO"); 
@@ -91,24 +82,13 @@ void setup()
 
 /*
  *****************************************************
- *
  *    LOOP
- *
  *****************************************************
  */
 void loop(){
-  // read the state of the pushbutton value:
-  currentState = digitalRead(buttonPin);
-   unsigned long currentMillis = millis();
-  // Send temperature readings
- /* if (currentMillis - previousMillis >= interval){
-    previousMillis = currentMillis;
-    sensors.requestTemperatures(); 
-    temperatureString = String(sensors.getTempCByIndex(0)) + "C  " +  String(sensors.getTempFByIndex(0)) + "F";
-    SerialBT.println(temperatureString); 
-  }*/
-
- // Read received messages form serial monitor aplication (LED control command)
+    currentState = digitalRead(buttonPin);// Lee el valor del estado del botón
+  
+  // Lee los mensajes recibidos desde la aplicación del monitor serial
   if (Serial.available()) {
         char serialChar = Serial.read();
     if (serialChar != '\n'){
@@ -120,7 +100,7 @@ void loop(){
       SerialBT.write(serialChar);
   }
 
-    // Read received messages form external BT aplication (LED control command)
+    // Lee mensajes recibidos desde una aplicación BT externa (APP EN ANDROID)
   if (SerialBT.available()){
     char incomingChar = SerialBT.read();
     if (incomingChar != '\n'){
@@ -132,48 +112,38 @@ void loop(){
     Serial.write(incomingChar); 
   }
   
-  // Check received message and control output accordingly
+  // Verifica el mensaje recibido y controla la salida en consecuencia
   if (message =="led_on" || (lastState == HIGH && currentState == LOW)){
-    Serial.println("\n The button is pressed");
+    Serial.println("\n Botón presionado");
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(message);
-    /*lcd.setCursor(0, 1);
-    lcd.print();*/
-    
-    /*digitalWrite(ledPinR, HIGH);
-    digitalWrite(ledPinG, HIGH);*/
-    //digitalWrite(ledPinB, HIGH);
     
     // color code #00C9CC (R = 0,   G = 201, B = 204)
-    setColor( 242, 211, 70);
-    delay(1000); // keep the color 1 second
+    setColor( 0, 201, 204);
+    delay(1000); // mantener el color 1 segundo
   
     // color code #F7788A (R = 247, G = 120, B = 138)
-    setColor( 0, 0, 251);  
-    delay(1000); // keep the color 1 second
+    setColor( 247,120, 138);  
+    delay(1000); 
   
     // color code #34A853 (R = 52,  G = 168, B = 83)
-    setColor( 251, 0, 0);
-    delay(1000); // keep the color 1 second
+    setColor( 52, 168, 83);
+    delay(1000);
 
     // color code #ff009f (R = 240,  G = 0, B = 10)
-    setColor( 207, 99, 135);
-    delay(1000); // keep the color 1 second
+    setColor( 240, 0, 10);
+    delay(1000);
   }
   else if (message =="led_off" || (lastState == LOW && currentState == HIGH)){
-    Serial.println(" \n The button is released");
+    Serial.println(" \n Botón no presionado");
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(message);
-    
-    digitalWrite(ledPinR, LOW);
-    digitalWrite(ledPinG, LOW);
-    digitalWrite(ledPinB, LOW);
-
+    setColor(0,0,0);
   }
      
-    lastState = currentState; // save the the last state
+    lastState = currentState; // Guarda el último estado del botón
   delay(20);
 
 }
