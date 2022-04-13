@@ -33,19 +33,6 @@
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
 
-LiquidCrystal lcd(RS, EN, DB4, DB5, DB6, DB7); //INICIALIZACION LCD 16x2
-BluetoothSerial SerialBT; // Bluetooth Serial object
-
-const int buttonPin = 27;     // el pin del botón 
-
-// variables will change:
-int lastState = LOW;  // el estado anterior del pin de entrada
-int currentState;   // la lectura actual del pin de entrada
-
-// Handle received and sent messages
-String message = "";
-char incomingChar;
-
 /*
  *****************************************************
  *    SETUP
