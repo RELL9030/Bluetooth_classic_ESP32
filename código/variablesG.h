@@ -1,7 +1,8 @@
 /*
-* Variables Globales y estructuras
+ *****************************************************
+ *   Variables Globales y estructuras
+ *****************************************************
 */
-
 #define RS 5 //PIN D19 o D5
 #define EN 17 //PIN D18 o TX2 GPIO17
 #define DB4 16 //PIN D5 o RX2 GPIO16
